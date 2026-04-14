@@ -59,21 +59,21 @@ const AI_CONFIG = {
     ptags:['😈 反論特化','⚡ MoE高速','💰 無料','🇺🇸 Google製'],
     role:'🎭 ツッコミ役'
   },
-  deepseekr1: {
-    name:'DeepSeek R1',
-    model:'deepseek/deepseek-r1:free',
-    color:'var(--deepseek)', avatar:'D1', avatarBg:'rgba(79,195,247,0.15)',
+  qwen3: {
+    name:'Qwen3 Next 80B',
+    model:'qwen/qwen3-next-80b-a3b-instruct:free',
+    color:'var(--qwen)', avatar:'Q3', avatarBg:'rgba(52,211,153,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
-    desc:'DeepSeek製の思考型推論モデル。答える前に内部で熟考するCoT方式で、複雑な論理・数学・哲学的議論に強い。',
-    ptags:['🧠 Chain-of-Thought','🔬 深い推論','💰 無料','🇨🇳 DeepSeek製']
+    desc:'Alibaba Qwen3の最新80B MoEモデル。多言語と推論に強く、複雑な議論を構造的に展開する。OpenRouter無料枠で利用可。',
+    ptags:['🌏 多言語', '🧠 推論型', '💰 無料', '🇨🇳 Alibaba製']
   },
-  deepseekv3: {
-    name:'DeepSeek V3',
-    model:'deepseek/deepseek-chat:free',
-    color:'var(--accent2)', avatar:'D3', avatarBg:'rgba(0,229,170,0.15)',
+  glm: {
+    name:'GLM 4.5 Air',
+    model:'z-ai/glm-4.5-air:free',
+    color:'var(--accent2)', avatar:'GL', avatarBg:'rgba(0,229,170,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
-    desc:'DeepSeek製の高速汎用モデル。R1より応答が速くバランスに優れる。幅広いテーマで的確かつ流暢な日本語を返す。',
-    ptags:['⚡ 高速','🗣 流暢な日本語','💰 無料','🇨🇳 DeepSeek製']
+    desc:'Zhipu AIのGLM 4.5 Air軽量版。応答が速くバランスに優れる。幅広いテーマで的確かつ流暢な日本語を返す。',
+    ptags:['⚡ 高速', '🗣 流暢な日本語', '💰 無料', '🇨🇳 Zhipu製']
   },
   llama: {
     name:'Llama 4 Scout',
