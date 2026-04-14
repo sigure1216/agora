@@ -65,7 +65,7 @@ const AI_CONFIG = {
     color:'var(--qwen)', avatar:'Q3', avatarBg:'rgba(52,211,153,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
     desc:'Alibaba Qwen3の最新80B MoEモデル。多言語と推論に強く、複雑な議論を構造的に展開する。OpenRouter無料枠で利用可。',
-    ptags:['🌏 多言語', '🧠 推論型', '💰 無料', '🇨🇳 Alibaba製']
+    ptags:['🌏 多言語','🧠 推論型','💰 無料','🇨🇳 Alibaba製']
   },
   glm: {
     name:'GLM 4.5 Air',
@@ -73,7 +73,23 @@ const AI_CONFIG = {
     color:'var(--accent2)', avatar:'GL', avatarBg:'rgba(0,229,170,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
     desc:'Zhipu AIのGLM 4.5 Air軽量版。応答が速くバランスに優れる。幅広いテーマで的確かつ流暢な日本語を返す。',
-    ptags:['⚡ 高速', '🗣 流暢な日本語', '💰 無料', '🇨🇳 Zhipu製']
+    ptags:['⚡ 高速','🗣 流暢な日本語','💰 無料','🇨🇳 Zhipu製']
+  },
+  deepseek: {
+    name:'DeepSeek V3.2',
+    model:'deepseek-chat',
+    color:'var(--deepseek)', avatar:'DS', avatarBg:'rgba(79,195,247,0.15)',
+    tag:'paid', provider:'deepseek', keyId:'deepseek',
+    desc:'DeepSeek公式API経由の高速汎用モデル。安価かつ低レイテンシで、複雑な推論・流暢な日本語・長文理解を両立。議論の軸として頼れる一枚。',
+    ptags:['💴 激安','🧠 高推論力','🇨🇳 DeepSeek製','🗣 流暢な日本語']
+  },
+  deepseekr: {
+    name:'DeepSeek R1',
+    model:'deepseek-reasoner',
+    color:'var(--deepseek)', avatar:'R1', avatarBg:'rgba(79,195,247,0.15)',
+    tag:'paid', provider:'deepseek', keyId:'deepseek',
+    desc:'DeepSeek公式のR1系推論モデル。Chain-of-Thoughtで内省しながら結論へ至る思考型。複雑な論理・数学・哲学的議論で真価を発揮。',
+    ptags:['🧠 Chain-of-Thought','🔬 深い推論','💴 低価格','🇨🇳 DeepSeek製']
   },
   llama: {
     name:'Llama 4 Scout',
@@ -186,6 +202,7 @@ function buildApiKeyForm() {
     {keyId:'groq', label:'Groq', color:'var(--llama)', ph:'gsk_... (Llama高速推論)'},
   ];
   const paidRows = [
+    {keyId:'deepseek', label:'DeepSeek', color:'var(--deepseek)', ph:'sk-... (platform.deepseek.com)'},
     {keyId:'chatgpt', label:'ChatGPT', color:'var(--chatgpt)', ph:'sk-...'},
     {keyId:'claude', label:'Claude', color:'var(--claude)', ph:'sk-ant-...'},
   ];
@@ -412,6 +429,7 @@ async function callAI(id, retries) {
     else if(ai.provider==='openai') text = await callOpenAI(ai, key, msgs, sysPrompt);
     else if(ai.provider==='claude') text = await callClaude(ai, key, msgs, sysPrompt);
     else if(ai.provider==='groq') text = await callGroq(ai, key, msgs, sysPrompt);
+    else if(ai.provider==='deepseek') text = await callDeepSeek(ai, key, msgs, sysPrompt);
     typingEl.remove();
     addMessage(id, text);
     sessionHistory.push({aiId:id, name:ai.name, content:text});
@@ -441,7 +459,7 @@ function buildPrompt(id) {
   const subDesc = {
     brainstorm:'自由な発想でアイデアを出し合う',
     decide:'最善の選択肢を選ぶための分析と判断を行う',
-    action:'実行可胼なタスクと計画に落とし込む',
+    action:'実行可能なタスクと計画に落とし込む',
     idea:'できるだけ多くの独創的なアイデアを量産する',
     persona:'与えられた役割・ペルソナの視点から意見を述べる',
     devil:'あえて反対意見・リスク・穴を指摘する悪魔の代弁者として振る舞う',
@@ -525,6 +543,22 @@ async function callOpenAI(ai, key, msgs, sysPrompt) {
     method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body:JSON.stringify(body)
   });
   if(!res.ok) { const e=await res.json(); throw new Error(e.error?.message||`HTTP ${res.status}`); }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || '応答なし';
+}
+
+/* DeepSeek API (公式直叩き、OpenAI互換) */
+async function callDeepSeek(ai, key, msgs, sysPrompt) {
+  const body = {
+    model: ai.model,
+    messages: [{role:'system', content:sysPrompt}, ...msgs],
+    max_tokens: 1024,
+    temperature: 0.8
+  };
+  const res = await fetch('https://api.deepseek.com/chat/completions', {
+    method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body:JSON.stringify(body)
+  });
+  if(!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||`HTTP ${res.status}`); }
   const data = await res.json();
   return data.choices?.[0]?.message?.content || '応答なし';
 }
