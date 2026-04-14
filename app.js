@@ -3,8 +3,8 @@
 // ============================================================ */
 const AI_CONFIG = {
   gemini: {
-    name:'Gemini 2.0 Flash',
-    model:'gemini-2.0-flash',
+    name:'Gemini 1.5 Flash',
+    model:'gemini-1.5-flash',
     color:'var(--gemini)', avatar:'G', avatarBg:'rgba(91,143,255,0.15)',
     tag:'free', provider:'gemini', keyId:'gemini',
     desc:'Google製マルチモーダルモデル。テキスト・画像を同時に理解し、Google検索とも連携。最新情報への対応力が強み。',
@@ -69,7 +69,7 @@ const AI_CONFIG = {
   },
   deepseekv3: {
     name:'DeepSeek V3',
-    model:'deepseek/deepseek-chat-v3-5:free',
+    model:'deepseek/deepseek-chat:free',
     color:'var(--accent2)', avatar:'D3', avatarBg:'rgba(0,229,170,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
     desc:'DeepSeek製の高速汎用モデル。R1より応答が速くバランスに優れる。幅広いテーマで的確かつ流暢な日本語を返す。',
