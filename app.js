@@ -47,8 +47,8 @@ const AI_CONFIG = {
     model:'qwen-plus',
     color:'var(--qwen)', avatar:'Qw', avatarBg:'rgba(52,211,153,0.15)',
     tag:'free', provider:'dashscope', keyId:'dashscope',
-    desc:'Alibaba Cloud Model Studio提供のQwenフラッグシップモデル。高性能かつ100万トークン無料枚あり。OpenAI互換APIで安定利用。',
-    ptags:['🌏 多言語','🧠 高性能','💰 無料枚あり','🇨🇳 Alibaba製']
+    desc:'Alibabaæœ€æ–°ã®Qwen3ãƒ•ãƒ©ãƒƒã‚°ã‚·ãƒƒãƒ—MoEãƒ¢ãƒ‡ãƒ«ã€‚235Bãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼ˆ22Bã‚¢ã‚¯ãƒ†ã‚£ãƒ–ï¼‰ã§å¤šè¨€èªžãƒ»æŽ¨è«–ã«åœ§å€’çš„å¼·ã•ã€‚DashScopeå…¬å¼APIã§å®‰å®šåˆ©ç”¨ã€‚',
+    ptags:['ðŸŒ å¤šè¨€èªž','ðŸ§  æŽ¨è«–åž‹','ðŸ’° ç„¡æ–™æž ã‚ã‚Š','ðŸ‡¨ðŸ‡³ Alibabaè£½']
   },
   glm: {
     name:'GLM 4.5 Air',
