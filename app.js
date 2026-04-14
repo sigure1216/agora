@@ -3,28 +3,20 @@
 // ============================================================ */
 const AI_CONFIG = {
   gemini: {
-    name:'Gemini 1.5 Flash',
-    model:'gemini-1.5-flash',
+    name:'Gemini 2.5 Flash',
+    model:'gemini-2.5-flash',
     color:'var(--gemini)', avatar:'G', avatarBg:'rgba(91,143,255,0.15)',
     tag:'free', provider:'gemini', keyId:'gemini',
-    desc:'Google製マルチモーダルモデル。テキスト・画像を同時に理解し、Google検索とも連携。最新情報への対応力が強み。',
-    ptags:['🖼 マルチモーダル','🔍 リアルタイム検索','💰 無料','🇺🇸 Google製']
+    desc:'Google最新のマルチモーダル高速モデル。テキスト・画像を同時に理解し、長文処理と論理推論のバランスに優れる。最新情報にも強い。',
+    ptags:['🖼 マルチモーダル','⚡ 高速','💰 無料','🇺🇸 Google製']
   },
   gemma: {
-    name:'Gemma 4 31B',
-    model:'google/gemma-4-31b-it:free',
+    name:'Gemma 3 27B',
+    model:'google/gemma-3-27b-it:free',
     color:'var(--deepseek)', avatar:'Gm', avatarBg:'rgba(79,195,247,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
-    desc:'Google DeepMind製オープンモデルの最新世代。262Kの超長文コンテキストを持ち、構造的・論理的な議論を展開する。',
-    ptags:['📄 262K文脈','🧠 論理的','💰 無料','🇺🇸 Google製']
-  },
-  nemotron: {
-    name:'Nemotron 120B',
-    model:'nvidia/nemotron-3-super-120b-a12b:free',
-    color:'var(--llama)', avatar:'N', avatarBg:'rgba(255,179,71,0.15)',
-    tag:'free', provider:'openrouter', keyId:'openrouter',
-    desc:'NVIDIA製120Bハイブリッドモデル。Mamba-Transformerアーキテクチャで複雑な推論と多角的分析が得意。',
-    ptags:['💪 120B規模','🔀 ハイブリッド型','💰 無料','🟢 NVIDIA製']
+    desc:'Google DeepMind製オープンモデルの決定版。128Kの長文コンテキストと堅実な日本語処理で、構造的・論理的な議論を落ち着いて展開する。',
+    ptags:['📄 128K文脈','🧠 論理的','💰 無料','🇺🇸 Google製']
   },
   gptoss: {
     name:'GPT-OSS 20B',
@@ -34,13 +26,13 @@ const AI_CONFIG = {
     desc:'OpenAI初のオープンソースモデル。MoEアーキテクチャで軽量ながらGPT品質の応答。ツール使用・構造化出力に対応。',
     ptags:['🌐 OpenAI系','⚡ MoE軽量','💰 無料','🇺🇸 OpenAI製']
   },
-  minimax: {
-    name:'MiniMax M2.5',
-    model:'minimax/minimax-m2.5:free',
-    color:'var(--kimi)', avatar:'Mx', avatarBg:'rgba(192,132,252,0.15)',
+  llama33: {
+    name:'Llama 3.3 70B',
+    model:'meta-llama/llama-3.3-70b-instruct:free',
+    color:'var(--llama)', avatar:'L3', avatarBg:'rgba(255,179,71,0.15)',
     tag:'free', provider:'openrouter', keyId:'openrouter',
-    desc:'MiniMax製オフィス特化型大規模モデル。文書作成・タスク整理・創造的発想が得意で、会議モードで真価を発揮。',
-    ptags:['📋 業務特化','💡 創造的','💰 無料','🇨🇳 MiniMax製']
+    desc:'Meta製の定番大規模モデル。70Bの地力で幅広いテーマを堅実にこなす。バランス型で議論の基盤を支える安定枠。',
+    ptags:['💪 70B規模','🤝 バランス型','💰 無料','🦙 Meta製']
   },
   nemotronano: {
     name:'Nemotron Nano 9B',
@@ -49,15 +41,6 @@ const AI_CONFIG = {
     tag:'free', provider:'openrouter', keyId:'openrouter',
     desc:'NVIDIA製コンパクト高速モデル。9Bながら即答性に優れ、スピード重視のブレストや短文ディベートで活躍。',
     ptags:['⚡ 超高速応答','🎯 簡潔明快','💰 無料','🟢 NVIDIA製']
-  },
-  gemma2: {
-    name:'Gemma 4 26B（ツッコミ役）',
-    model:'google/gemma-4-26b-a4b-it:free',
-    color:'var(--grok)', avatar:'G2', avatarBg:'rgba(56,189,248,0.15)',
-    tag:'free', provider:'openrouter', keyId:'openrouter',
-    desc:'Google Gemma 4のMoE軽量版。鋭い反論と別視点の提示が持ち味。毒舌キャラとして議論を荒らす（いい意味で）。',
-    ptags:['😈 反論特化','⚡ MoE高速','💰 無料','🇺🇸 Google製'],
-    role:'🎭 ツッコミ役'
   },
   qwen3: {
     name:'Qwen3 Next 80B',
@@ -76,12 +59,13 @@ const AI_CONFIG = {
     ptags:['⚡ 高速','🗣 流暢な日本語','💰 無料','🇨🇳 Zhipu製']
   },
   deepseek: {
-    name:'DeepSeek V3.2',
+    name:'DeepSeek V3.2（ツッコミ役）',
     model:'deepseek-chat',
     color:'var(--deepseek)', avatar:'DS', avatarBg:'rgba(79,195,247,0.15)',
     tag:'paid', provider:'deepseek', keyId:'deepseek',
-    desc:'DeepSeek公式API経由の高速汎用モデル。安価かつ低レイテンシで、複雑な推論・流暢な日本語・長文理解を両立。議論の軸として頼れる一枚。',
-    ptags:['💴 激安','🧠 高推論力','🇨🇳 DeepSeek製','🗣 流暢な日本語']
+    desc:'DeepSeek公式API経由の高速汎用モデル。安価かつ低レイテンシで日本語の切り返しが鋭く、矛盾や甘さを即座に指摘するツッコミ役として場を締める。',
+    ptags:['😈 鋭い切り返し','💴 激安','🧠 高推論力','🇨🇳 DeepSeek製'],
+    role:'🎭 ツッコミ役'
   },
   deepseekr: {
     name:'DeepSeek R1',
@@ -90,14 +74,6 @@ const AI_CONFIG = {
     tag:'paid', provider:'deepseek', keyId:'deepseek',
     desc:'DeepSeek公式のR1系推論モデル。Chain-of-Thoughtで内省しながら結論へ至る思考型。複雑な論理・数学・哲学的議論で真価を発揮。',
     ptags:['🧠 Chain-of-Thought','🔬 深い推論','💴 低価格','🇨🇳 DeepSeek製']
-  },
-  llama: {
-    name:'Llama 4 Scout',
-    model:'meta-llama/llama-4-scout-17b-16e-instruct',
-    color:'var(--llama)', avatar:'L', avatarBg:'rgba(255,179,71,0.15)',
-    tag:'free', provider:'groq', keyId:'groq',
-    desc:'Meta製の最新Llama 4。Groq経由で超高速応答。MoEアーキテクチャで軽量ながら鋭い意見を出す。議論のテンポを上げる存在。',
-    ptags:['⚡ Groq超高速','🦙 Meta製','💰 無料','🔀 MoE軽量']
   },
   chatgpt: {
     name:'ChatGPT 4o',
@@ -166,7 +142,7 @@ function buildAIList() {
   Object.entries(AI_CONFIG).forEach(([id, ai]) => {
     const ok = canUse(id);
     if(ok) selectedAIs.push(id);
-    const tagLabel = ok ? (ai.tag==='free'?'FREE':'READY') : (ai.tag==='paid'?'有料・要キー':'要APIキー');
+    const tagLabel = ok ? (ai.tag==='free'?'FREE':'READY') : (ai.tag==='paid'?'有料・覀キー':'要APIキー');
     const tagClass = ok ? 'free' : (ai.tag==='paid'?'paid':'nokey');
     const item = document.createElement('div');
     item.className = `ai-item${ok?' active':''}`;
@@ -197,9 +173,8 @@ function buildApiKeyForm() {
   const form = document.getElementById('apiKeyForm');
   form.innerHTML = '';
   const rows = [
-    {keyId:'openrouter', label:'OpenRouter', color:'var(--accent)', ph:'sk-or-v1-... (Gemma/Nemotron/MiniMax等共通)'},
+    {keyId:'openrouter', label:'OpenRouter', color:'var(--accent)', ph:'sk-or-v1-... (Gemma/Llama/Qwen/GLM等共通)'},
     {keyId:'gemini', label:'Gemini', color:'var(--gemini)', ph:'AIzaSy...'},
-    {keyId:'groq', label:'Groq', color:'var(--llama)', ph:'gsk_... (Llama高速推論)'},
   ];
   const paidRows = [
     {keyId:'deepseek', label:'DeepSeek', color:'var(--deepseek)', ph:'sk-... (platform.deepseek.com)'},
