@@ -303,10 +303,12 @@ function buildAIList() {
       const profile = item.querySelector('.ai-profile');
       if (profile.style.display === 'none') {
         profile.style.display = 'block';
-        profile.classList.add('open');
+        profile.style.maxHeight = 'none';
+        profile.style.overflow = 'visible';
       } else {
         profile.style.display = 'none';
-        profile.classList.remove('open');
+        profile.style.maxHeight = '0';
+        profile.style.overflow = 'hidden';
       }
     });
 
