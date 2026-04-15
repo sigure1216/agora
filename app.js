@@ -660,11 +660,40 @@ async function callAI(aiId, retries = 2) {
       await sleep(2000);
       await callAI(aiId, retries - 1);
     } else {
-      addMessage(aiId, `エラー: ${err.message}`, true);
+      addMessage(aiId, `エラー: ${translateError(err.message)}`, true);
     }
   }
 
   scrollBottom();
+}
+
+// ============================================================================
+// エラーメッセージ日本語翻訳
+// ============================================================================
+
+function translateError(msg) {
+  const translations = [
+    [/high demand/i, 'このモデルは現在アクセスが集中しています。しばらく待ってから再試行してください。'],
+    [/rate limit/i, 'リクエスト回数の上限に達しました。しばらく待ってから再試行してください。'],
+    [/quota exceeded/i, '利用上限に達しました。APIキーの残高を確認してください。'],
+    [/invalid api key/i, 'APIキーが無効です。設定画面で正しいキーを入力してください。'],
+    [/unauthorized|401/i, '認証に失敗しました。APIキーを確認してください。'],
+    [/forbidden|403/i, 'アクセスが拒否されました。APIキーの権限を確認してください。'],
+    [/not found|404/i, 'モデルが見つかりません。現在利用できない可能性があります。'],
+    [/too many requests|429/i, 'リクエストが多すぎます。少し待ってから再試行してください。'],
+    [/internal server error|500/i, 'サーバー側でエラーが発生しました。しばらく待ってから再試行してください。'],
+    [/service unavailable|503/i, 'サービスが一時的に利用できません。しばらく待ってから再試行してください。'],
+    [/timeout|timed?\s*out/i, '応答がタイムアウトしました。再試行してください。'],
+    [/network|fetch|failed to fetch/i, 'ネットワークエラーが発生しました。インターネット接続を確認してください。'],
+    [/CORS/i, 'CORSエラー: このモデルはブラウザから直接利用できません。'],
+    [/context.*(length|too long|window)/i, '入力が長すぎます。テーマや会話を短くしてください。'],
+    [/content.*(filter|policy|safety)/i, 'コンテンツフィルターにより応答がブロックされました。テーマを変えてお試しください。'],
+  ];
+
+  for (const [pattern, japanese] of translations) {
+    if (pattern.test(msg)) return japanese;
+  }
+  return msg;
 }
 
 // ============================================================================
