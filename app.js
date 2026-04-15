@@ -583,6 +583,12 @@ function buildMessages(sysPrompt) {
       role: 'user',
       content: `テーマについて ${SUB_MODES[currentSubmode]?.prompt || 'あなたの見解を述べてください'}。`
     });
+  } else if (userContent !== null) {
+    // Trailing user message not yet paired with assistant response
+    msgs.push({
+      role: 'user',
+      content: userContent
+    });
   } else if (msgs[msgs.length - 1].role === 'assistant') {
     // Ensure last message is from user (required by Gemini API and others)
     msgs.push({
