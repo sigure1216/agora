@@ -259,6 +259,27 @@ function gotoStart(mode, sub) {
 // AI リスト - AI選択UI の構築
 // ============================================================================
 
+function toggleInfo(aiId) {
+  const profile = document.getElementById('profile-' + aiId);
+  if (!profile) return;
+  if (profile.style.display === 'none' || profile.style.display === '') {
+    profile.style.display = 'block';
+  } else {
+    profile.style.display = 'none';
+  }
+}
+
+function toggleAI(aiId) {
+  const items = document.querySelectorAll('.ai-item');
+  items.forEach(item => {
+    const circle = item.querySelector('.check-circle');
+    if (circle && circle.dataset.ai === aiId) {
+      item.classList.toggle('active');
+    }
+  });
+  updateSelectedAIs();
+}
+
 function buildAIList() {
   const container = document.getElementById('aiList');
   if (!container) return;
@@ -276,16 +297,16 @@ function buildAIList() {
     item.innerHTML = `
       <div class="ai-row">
         <div class="ai-av" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
-        <div class="ai-inf">
+        <div class="ai-inf" onclick="toggleAI('${id}')">
           <div class="ai-nm">${ai.name} <span class="ai-tag ${tagClass}">${tagLabel}</span></div>
           <div class="ai-md" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
             ${ai.ptags.map(p => `<span class="ai-ptag">${p}</span>`).join('')}
           </div>
         </div>
-        <button class="info-btn" data-ai="${id}">ℹ</button>
-        <div class="check-circle" data-ai="${id}">✓</div>
+        <button class="info-btn" onclick="event.stopPropagation();toggleInfo('${id}')">ℹ</button>
+        <div class="check-circle" data-ai="${id}" onclick="event.stopPropagation();toggleAI('${id}')">✓</div>
       </div>
-      <div class="ai-profile" data-ai="${id}" style="display:none">
+      <div class="ai-profile" id="profile-${id}" style="display:none;max-height:none;overflow:visible">
         <div class="ai-profile-inner">
           <div class="ai-profile-desc">${ai.desc}</div>
           <div class="ai-profile-tags">
@@ -294,45 +315,6 @@ function buildAIList() {
         </div>
       </div>
     `;
-
-    // Info button toggle (use display instead of max-height for mobile compatibility)
-    const infoBtn = item.querySelector('.info-btn');
-    infoBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      infoBtn.classList.toggle('open');
-      const profile = item.querySelector('.ai-profile');
-      if (profile.style.display === 'none') {
-        profile.style.display = 'block';
-        profile.style.maxHeight = 'none';
-        profile.style.overflow = 'visible';
-      } else {
-        profile.style.display = 'none';
-        profile.style.maxHeight = '0';
-        profile.style.overflow = 'hidden';
-      }
-    });
-
-    // Check circle toggle (select/deselect AI)
-    const check = item.querySelector('.check-circle');
-    check.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!canUseThis) {
-        showToast(`${ai.keyId} のAPIキーを設定してください`);
-        return;
-      }
-      item.classList.toggle('active');
-      updateSelectedAIs();
-    });
-
-    // Tap row to toggle selection
-    item.querySelector('.ai-inf').addEventListener('click', () => {
-      if (!canUseThis) {
-        showToast(`${ai.keyId} のAPIキーを設定してください`);
-        return;
-      }
-      item.classList.toggle('active');
-      updateSelectedAIs();
-    });
 
     container.appendChild(item);
   });
