@@ -583,6 +583,12 @@ function buildMessages(sysPrompt) {
       role: 'user',
       content: `テーマについて ${SUB_MODES[currentSubmode]?.prompt || 'あなたの見解を述べてください'}。`
     });
+  } else if (msgs[msgs.length - 1].role === 'assistant') {
+    // Ensure last message is from user (required by Gemini API and others)
+    msgs.push({
+      role: 'user',
+      content: `前の議論を踏まえて、さらに議論を深めてください。`
+    });
   }
 
   return msgs;
