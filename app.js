@@ -223,7 +223,7 @@ async function showToast(msg) {
 }
 
 function scrollBottom() {
-  const chat = document.getElementById('chatMessages');
+  const chat = document.getElementById('messages');
   if (chat) chat.scrollTop = chat.scrollHeight;
 }
 
@@ -266,51 +266,72 @@ function buildAIList() {
 
   Object.entries(AI_CONFIG).forEach(([id, ai]) => {
     const canUseThis = canUse(id);
-    let tag = ai.tag;
-    if (!canUseThis && ai.tag !== 'free') tag = '要APIキー';
+    let tagClass = ai.tag;  // 'free' or 'paid'
+    let tagLabel = ai.tag === 'free' ? 'free' : 'paid';
+    if (!canUseThis && ai.tag !== 'free') { tagClass = 'nokey'; tagLabel = '要APIキー'; }
 
-    const card = document.createElement('div');
-    card.className = 'ai-card';
-    card.innerHTML = `
-      <div class="ai-card-header">
-        <div class="ai-avatar" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
-        <div class="ai-info">
-          <div class="ai-name">${ai.name}</div>
-          <div class="ai-tag">${tag}</div>
+    const item = document.createElement('div');
+    item.className = 'ai-item';
+    item.style.color = ai.color;
+    item.innerHTML = `
+      <div class="ai-row">
+        <div class="ai-av" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
+        <div class="ai-inf">
+          <div class="ai-nm">${ai.name} <span class="ai-tag ${tagClass}">${tagLabel}</span></div>
+          <div class="ai-md">${ai.desc.substring(0, 40)}...</div>
         </div>
-        <input type="checkbox" class="ai-checkbox" data-ai="${id}" ${canUseThis ? '' : 'disabled'}>
+        <button class="info-btn" data-ai="${id}">ℹ</button>
+        <div class="check-circle" data-ai="${id}">✓</div>
       </div>
-      <div class="ai-desc-collapsed">${ai.desc.substring(0, 50)}...</div>
-      <div class="ai-desc-expanded hidden">${ai.desc}</div>
-      <div class="ai-ptags">
-        ${ai.ptags.map(p => `<span>${p}</span>`).join('')}
+      <div class="ai-profile" data-ai="${id}">
+        <div class="ai-profile-inner">
+          <div class="ai-profile-desc">${ai.desc}</div>
+          <div class="ai-profile-tags">
+            ${ai.ptags.map(p => `<span class="ai-ptag">${p}</span>`).join('')}
+          </div>
+        </div>
       </div>
-      ${ai.role ? `<div class="ai-role">${ai.role}</div>` : ''}
     `;
 
-    // Expand/collapse description
-    card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('ai-checkbox')) return;
-      const exp = card.querySelector('.ai-desc-expanded');
-      const col = card.querySelector('.ai-desc-collapsed');
-      exp?.classList.toggle('hidden');
-      col?.classList.toggle('hidden');
+    // Info button toggle
+    const infoBtn = item.querySelector('.info-btn');
+    infoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      infoBtn.classList.toggle('open');
+      const profile = item.querySelector('.ai-profile');
+      profile.classList.toggle('open');
     });
 
-    // Handle checkbox
-    const cb = card.querySelector('.ai-checkbox');
-    cb.addEventListener('change', () => {
+    // Check circle toggle (select/deselect AI)
+    const check = item.querySelector('.check-circle');
+    check.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!canUseThis) {
+        showToast(`${ai.keyId} のAPIキーを設定してください`);
+        return;
+      }
+      item.classList.toggle('active');
       updateSelectedAIs();
     });
 
-    container.appendChild(card);
+    // Tap row to toggle selection
+    item.querySelector('.ai-inf').addEventListener('click', () => {
+      if (!canUseThis) {
+        showToast(`${ai.keyId} のAPIキーを設定してください`);
+        return;
+      }
+      item.classList.toggle('active');
+      updateSelectedAIs();
+    });
+
+    container.appendChild(item);
   });
 }
 
 function updateSelectedAIs() {
-  selectedAIs = Array.from(document.querySelectorAll('.ai-checkbox:checked'))
-    .map(cb => cb.dataset.ai);
-  const btn = document.getElementById('startSessionBtn');
+  selectedAIs = Array.from(document.querySelectorAll('.ai-item.active'))
+    .map(item => item.querySelector('.check-circle').dataset.ai);
+  const btn = document.getElementById('startBtn');
   if (btn) btn.disabled = selectedAIs.length < 2;
 }
 
@@ -365,20 +386,34 @@ function buildApiKeyForm() {
 // ============================================================================
 
 function buildModeSelector() {
-  const debate = document.getElementById('modeDebate');
-  const meet = document.getElementById('modeMeet');
-  if (debate) debate.classList.toggle('active', currentMode === 'debate');
-  if (meet) meet.classList.toggle('active', currentMode === 'meet');
+  const debate = document.getElementById('msDebate');
+  const meet = document.getElementById('msMeet');
+  if (debate) {
+    debate.classList.toggle('active', currentMode === 'debate');
+    debate.classList.toggle('debate', currentMode === 'debate');
+  }
+  if (meet) {
+    meet.classList.toggle('active', currentMode === 'meet');
+    meet.classList.toggle('meet', currentMode === 'meet');
+  }
+  // Show/hide submode card and agenda card based on mode
+  const submodeCard = document.getElementById('submodeCard');
+  const agendaCard = document.getElementById('agendaCard');
+  const roundCard = document.getElementById('roundCard');
+  if (submodeCard) submodeCard.style.display = currentMode === 'meet' ? '' : 'none';
+  if (agendaCard) agendaCard.style.display = currentMode === 'meet' ? '' : 'none';
+  if (roundCard) roundCard.style.display = currentMode === 'debate' ? '' : 'none';
+  // Update start button text
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) {
+    startBtn.textContent = currentMode === 'debate' ? '▶ ディベート開始' : '▶ 会議開始';
+    startBtn.className = currentMode === 'debate' ? 'start-btn' : 'start-btn meet-btn';
+  }
 }
 
 function selectMode(mode) {
   currentMode = mode;
   buildModeSelector();
-  if (mode === 'debate') {
-    document.getElementById('submodeSection').classList.remove('hidden');
-  } else {
-    document.getElementById('submodeSection').classList.remove('hidden');
-  }
 }
 
 // ============================================================================
@@ -386,26 +421,18 @@ function selectMode(mode) {
 // ============================================================================
 
 function buildSubModeSelector() {
-  const container = document.getElementById('submodepills');
-  if (!container) return;
-  container.innerHTML = '';
-
-  Object.values(SUB_MODES).forEach(sub => {
-    const pill = document.createElement('button');
-    pill.className = 'submode-pill';
-    if (sub.key === currentSubmode) pill.classList.add('active');
-    pill.textContent = `${sub.icon} ${sub.label}`;
-    pill.onclick = () => selSub(pill);
-    container.appendChild(pill);
+  // Use the existing sm-pill elements in HTML
+  const pills = document.querySelectorAll('.sm-pill');
+  pills.forEach(pill => {
+    const sub = pill.dataset.sub;
+    pill.classList.toggle('active', sub === currentSubmode);
   });
 }
 
 function selSub(el) {
-  document.querySelectorAll('.submode-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sm-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
-  currentSubmode = el.textContent.split(' ').slice(1).join(' ');
-  // Find by label
-  currentSubmode = Object.entries(SUB_MODES).find(([, s]) => s.label === el.textContent.split(' ').slice(1).join(' '))?.[0] || 'brainstorm';
+  currentSubmode = el.dataset.sub || 'brainstorm';
 }
 
 // ============================================================================
@@ -415,7 +442,7 @@ function selSub(el) {
 function selRound(btn) {
   document.querySelectorAll('.round-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  maxRounds = parseInt(btn.dataset.rounds) || 3;
+  maxRounds = parseInt(btn.textContent) || 3;
 }
 
 // ============================================================================
@@ -428,6 +455,10 @@ async function startSession() {
     showToast('テーマを入力してください');
     return;
   }
+  if (selectedAIs.length < 2) {
+    showToast('AIを2つ以上選択してください');
+    return;
+  }
 
   currentTheme = themeInput.value.trim();
   sessionHistory = [];
@@ -436,13 +467,32 @@ async function startSession() {
   // Switch to chat page
   switchTab('chat', document.querySelector('.tab-item:nth-child(3)'));
 
-  // Set up UI
-  document.getElementById('chatTitle').textContent = currentTheme;
-  document.getElementById('chatSubtitle').textContent =
-    `${currentMode === 'debate' ? '討論' : 'ミーティング'} / ${SUB_MODES[currentSubmode]?.label || currentSubmode}`;
+  // Set up chat topic bar
+  const topicText = document.getElementById('chatTopicText');
+  if (topicText) topicText.textContent = currentTheme;
+  const modeIcon = document.getElementById('chatModeIcon');
+  if (modeIcon) modeIcon.textContent = currentMode === 'debate' ? '🥊' : '🤝';
+  const roundBadge = document.getElementById('roundBadge');
+  if (roundBadge) roundBadge.textContent = `Round ${currentRound} / ${maxRounds}`;
+
+  // Update header chip
+  const chip = document.getElementById('headerChip');
+  if (chip) {
+    chip.textContent = currentMode === 'debate' ? 'ディベート中' : '会議中';
+    chip.className = `mode-chip ${currentMode === 'debate' ? 'debate' : 'meet'}`;
+  }
+
+  // Show/hide agenda bar for meet mode
+  const agendaBar = document.getElementById('agendaBar');
+  if (agendaBar) agendaBar.style.display = currentMode === 'meet' ? '' : 'none';
+
+  // Show next round button
+  const nextBtn = document.getElementById('nextBtn');
+  if (nextBtn) nextBtn.style.display = maxRounds > 1 ? '' : 'none';
 
   // Initialize chat
-  document.getElementById('chatMessages').innerHTML = '';
+  const messages = document.getElementById('messages');
+  if (messages) messages.innerHTML = '';
   addDivider(`ラウンド ${currentRound} / ${maxRounds}`);
 
   await runRound();
@@ -476,7 +526,9 @@ function nextRound() {
     return;
   }
   currentRound++;
-  document.getElementById('chatMessages').innerHTML += `<div class="divider">ラウンド ${currentRound} / ${maxRounds}</div>`;
+  const roundBadge = document.getElementById('roundBadge');
+  if (roundBadge) roundBadge.textContent = `Round ${currentRound} / ${maxRounds}`;
+  addDivider(`ラウンド ${currentRound} / ${maxRounds}`);
   runRound();
 }
 
@@ -593,12 +645,12 @@ async function callAI(aiId, retries = 2) {
     }
 
     // Remove typing indicator
-    document.querySelectorAll(`[data-ai="${aiId}"].typing`).forEach(el => el.remove());
+    document.querySelectorAll(`.typing-indicator[data-ai="${aiId}"]`).forEach(el => el.remove());
 
     addMessage(aiId, text);
     sessionHistory.push({ role: 'assistant', id: aiId, content: text });
   } catch (err) {
-    document.querySelectorAll(`[data-ai="${aiId}"].typing`).forEach(el => el.remove());
+    document.querySelectorAll(`.typing-indicator[data-ai="${aiId}"]`).forEach(el => el.remove());
 
     if (retries > 0 && err.message.includes('rate')) {
       await sleep(2000);
@@ -727,7 +779,7 @@ async function callClaude(ai, key, msgs, sysPrompt) {
 // ============================================================================
 
 function addDivider(txt) {
-  const chat = document.getElementById('chatMessages');
+  const chat = document.getElementById('messages');
   if (!chat) return;
   const div = document.createElement('div');
   div.className = 'divider';
@@ -736,41 +788,39 @@ function addDivider(txt) {
 }
 
 function addTyping(aiId) {
-  const chat = document.getElementById('chatMessages');
+  const chat = document.getElementById('messages');
   if (!chat) return;
   const ai = AI_CONFIG[aiId];
   if (!ai) return;
 
   const bubble = document.createElement('div');
-  bubble.className = 'message typing';
+  bubble.className = 'typing-indicator';
   bubble.dataset.ai = aiId;
   bubble.innerHTML = `
-    <div class="message-avatar" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
-    <div class="message-content">
-      <div class="typing-indicator">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
+    <div class="msg-av" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
+    <div class="typing-dots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
   `;
   chat.appendChild(bubble);
   scrollBottom();
 }
 
 function addMessage(aiId, text, isError = false) {
-  const chat = document.getElementById('chatMessages');
+  const chat = document.getElementById('messages');
   if (!chat) return;
   const ai = AI_CONFIG[aiId];
   if (!ai) return;
 
   const bubble = document.createElement('div');
-  bubble.className = `message ${isError ? 'error' : ''}`;
+  bubble.className = 'message';
   bubble.dataset.ai = aiId;
   bubble.innerHTML = `
-    <div class="message-avatar" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
-    <div class="message-content">
-      <div class="message-name">${ai.name}</div>
-      <div class="message-text">${escHtml(text)}</div>
-      <div class="message-time">${now()}</div>
+    <div class="msg-av" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
+    <div class="msg-body">
+      <div class="msg-hd">
+        <span class="msg-name">${ai.name}</span>
+        <span class="msg-time">${now()}</span>
+      </div>
+      <div class="msg-txt ${isError ? 'error' : ''}">${escHtml(text)}</div>
     </div>
   `;
   chat.appendChild(bubble);
@@ -781,7 +831,7 @@ function addMessage(aiId, text, isError = false) {
 // ============================================================================
 
 async function sendUserMessage() {
-  const input = document.getElementById('userInput');
+  const input = document.getElementById('chatInput');
   if (!input) return;
   const text = input.value.trim();
   if (!text) return;
@@ -792,14 +842,17 @@ async function sendUserMessage() {
   sessionHistory.push({ role: 'user', id: null, content: text });
 
   // Add to chat UI
-  const chat = document.getElementById('chatMessages');
+  const chat = document.getElementById('messages');
   const bubble = document.createElement('div');
-  bubble.className = 'message user';
+  bubble.className = 'message';
   bubble.innerHTML = `
-    <div class="message-avatar">You</div>
-    <div class="message-content">
-      <div class="message-text">${escHtml(text)}</div>
-      <div class="message-time">${now()}</div>
+    <div class="msg-av" style="background:rgba(91,143,255,0.15); color:var(--accent)">You</div>
+    <div class="msg-body">
+      <div class="msg-hd">
+        <span class="msg-name">あなた</span>
+        <span class="msg-time">${now()}</span>
+      </div>
+      <div class="msg-txt user-msg">${escHtml(text)}</div>
     </div>
   `;
   chat.appendChild(bubble);
@@ -911,20 +964,20 @@ function renderAgendaChips(roundIdx) {
 // ============================================================================
 
 function openModal() {
-  const modal = document.getElementById('xModal');
+  const modal = document.getElementById('modal');
   if (!modal) return;
 
   const text = buildXText();
   const tweets = splitTweets(text);
 
-  const container = document.getElementById('tweetsContainer');
+  const container = document.getElementById('tweetBlocks');
   if (container) {
     container.innerHTML = tweets
-      .map((t, i) => `<div class="tweet-preview">[${i + 1}/${tweets.length}]\n${t}</div>`)
+      .map((t, i) => `<div class="tweet-block"><div class="tweet-num">${i + 1} / ${tweets.length}</div><div class="tweet-text">${escHtml(t)}</div><div class="tweet-chars">${t.length} / 280</div></div>`)
       .join('');
   }
 
-  modal.classList.remove('hidden');
+  modal.classList.add('open');
 }
 
 function buildXText() {
@@ -960,17 +1013,17 @@ function splitTweets(text) {
 }
 
 function copyAll() {
-  const tweets = document.querySelectorAll('.tweet-preview');
-  const text = Array.from(tweets)
-    .map(t => t.textContent.split('\n').slice(1).join('\n'))
+  const blocks = document.querySelectorAll('.tweet-text');
+  const text = Array.from(blocks)
+    .map(t => t.textContent)
     .join('\n\n---\n\n');
   navigator.clipboard.writeText(text);
   showToast('コピーしました');
 }
 
 function closeModal() {
-  const modal = document.getElementById('xModal');
-  if (modal) modal.classList.add('hidden');
+  const modal = document.getElementById('modal');
+  if (modal) modal.classList.remove('open');
 }
 
 // ============================================================================
@@ -986,7 +1039,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Set up keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.ctrlKey && !isRunning) {
-      const input = document.getElementById('userInput');
+      const input = document.getElementById('chatInput');
       if (input && document.activeElement === input) {
         sendUserMessage();
       }
