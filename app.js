@@ -63,6 +63,13 @@ const AI_CONFIG = {
     desc: 'Zhipu AIのGLM 4.5 Air軽量版。応答が速くバランスに優れる。幅広いテーマで的確かつ流暢な日本語を返す。',
     ptags: ['⚡ 高速', '🗣 流暢な日本語', '💰 無料', '🇨🇳 Zhipu製']
   },
+  groq: {
+    name: 'Llama 3.3 70B (Groq)', model: 'llama-3.3-70b-versatile',
+    color: 'var(--grok)', avatar: 'Gq', avatarBg: 'rgba(56,189,248,0.15)',
+    tag: 'free', provider: 'groq', keyId: 'groq',
+    desc: 'Groq LPU推論エンジンで動作するLlama 3.3 70B。圧倒的な応答速度が最大の特徴で、リアルタイム議論に最適。',
+    ptags: ['⚡ 超高速推論', '💪 70B規模', '💰 無料枠あり', '🚀 Groq LPU']
+  },
   deepseek: {
     name: 'DeepSeek V3.2', model: 'deepseek-chat',
     color: 'var(--deepseek)', avatar: 'DS', avatarBg: 'rgba(79,195,247,0.15)',
@@ -136,7 +143,8 @@ const SUB_MODES = {
 const KEY_ROWS = [
   { keyId: 'openrouter', label: 'OpenRouter', color: 'var(--accent)', ph: 'sk-or-v1-... (Gemma/Llama/GLM等共通)' },
   { keyId: 'dashscope', label: 'DashScope (Qwen)', color: 'var(--qwen)', ph: 'sk-... (Alibaba Cloud Model Studio)' },
-  { keyId: 'gemini', label: 'Gemini', color: 'var(--gemini)', ph: 'AIzaSy...' }
+  { keyId: 'gemini', label: 'Gemini', color: 'var(--gemini)', ph: 'AIzaSy...' },
+  { keyId: 'groq', label: 'Groq', color: 'var(--grok)', ph: 'gsk_... (console.groq.com)' }
 ];
 
 const PAID_KEY_ROWS = [
@@ -640,6 +648,11 @@ async function callAI(aiId, retries = 2) {
     } else if (ai.provider === 'dashscope') {
       text = await callOpenAICompatible(
         'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
+        ai, key, msgs, sysPrompt
+      );
+    } else if (ai.provider === 'groq') {
+      text = await callOpenAICompatible(
+        'https://api.groq.com/openai/v1/chat/completions',
         ai, key, msgs, sysPrompt
       );
     } else if (ai.provider === 'claude') {
