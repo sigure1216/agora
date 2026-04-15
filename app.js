@@ -99,13 +99,6 @@ const AI_CONFIG = {
 // ============================================================================
 
 const SUB_MODES = {
-  brainstorm: {
-    key: 'brainstorm',
-    label: 'アイデア出し',
-    icon: '💡',
-    desc: '自由な発想でアイデアを出し合う',
-    prompt: '自由な発想でアイデアを出し合う'
-  },
   study: {
     key: 'study',
     label: '考える',
@@ -113,12 +106,12 @@ const SUB_MODES = {
     desc: '多角的に分析・解説',
     prompt: '教育的な視点から、異なる角度で分かりやすく解説する'
   },
-  devil: {
-    key: 'devil',
-    label: '悪魔の代弁者',
-    icon: '😈',
-    desc: '穴・リスク・反論探し',
-    prompt: 'あえて反対意見・リスク・穴を指摘する悪魔の代弁者として振る舞う'
+  brainstorm: {
+    key: 'brainstorm',
+    label: 'アイデア出し',
+    icon: '💡',
+    desc: '自由な発想でアイデアを出し合う',
+    prompt: '自由な発想でアイデアを出し合う'
   },
   predict: {
     key: 'predict',
@@ -126,6 +119,13 @@ const SUB_MODES = {
     icon: '🔮',
     desc: '未来・市場・トレンド',
     prompt: 'データと論理に基づいた未来予測を行う'
+  },
+  devil: {
+    key: 'devil',
+    label: '悪魔の代弁者',
+    icon: '😈',
+    desc: '穴・リスク・反論探し',
+    prompt: 'あえて反対意見・リスク・穴を指摘する悪魔の代弁者として振る舞う'
   }
 };
 
