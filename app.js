@@ -278,12 +278,14 @@ function buildAIList() {
         <div class="ai-av" style="background:${ai.avatarBg}; color:${ai.color}">${ai.avatar}</div>
         <div class="ai-inf">
           <div class="ai-nm">${ai.name} <span class="ai-tag ${tagClass}">${tagLabel}</span></div>
-          <div class="ai-md">${ai.desc.substring(0, 40)}...</div>
+          <div class="ai-md" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+            ${ai.ptags.map(p => `<span class="ai-ptag">${p}</span>`).join('')}
+          </div>
         </div>
         <button class="info-btn" data-ai="${id}">ℹ</button>
         <div class="check-circle" data-ai="${id}">✓</div>
       </div>
-      <div class="ai-profile" data-ai="${id}">
+      <div class="ai-profile" data-ai="${id}" style="display:none">
         <div class="ai-profile-inner">
           <div class="ai-profile-desc">${ai.desc}</div>
           <div class="ai-profile-tags">
@@ -293,13 +295,19 @@ function buildAIList() {
       </div>
     `;
 
-    // Info button toggle
+    // Info button toggle (use display instead of max-height for mobile compatibility)
     const infoBtn = item.querySelector('.info-btn');
     infoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       infoBtn.classList.toggle('open');
       const profile = item.querySelector('.ai-profile');
-      profile.classList.toggle('open');
+      if (profile.style.display === 'none') {
+        profile.style.display = 'block';
+        profile.classList.add('open');
+      } else {
+        profile.style.display = 'none';
+        profile.classList.remove('open');
+      }
     });
 
     // Check circle toggle (select/deselect AI)
