@@ -235,20 +235,20 @@ function setSendDisabled(v) {
 // ============================================================================
 
 function switchTab(name, el) {
-  // Hide all tabs
-  document.querySelectorAll('.tab-pane').forEach(t => t.classList.add('hidden'));
-  // Show selected tab
-  const tab = document.getElementById(`tab-${name}`);
-  if (tab) tab.classList.remove('hidden');
-  // Update nav buttons
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(t => t.classList.remove('active'));
+  // Show selected page
+  const page = document.getElementById(`page-${name}`);
+  if (page) page.classList.add('active');
+  // Update tab bar buttons
+  document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
 }
 
 function gotoStart(mode, sub) {
   currentMode = mode;
   currentSubmode = sub || 'brainstorm';
-  switchTab('start', document.querySelector(`[data-tab="start"]`));
+  switchTab('start', document.querySelector('.tab-item:nth-child(2)'));
   buildModeSelector();
   buildSubModeSelector();
 }
@@ -428,8 +428,7 @@ async function startSession() {
   currentRound = 1;
 
   // Switch to chat page
-  const chatTab = document.querySelector('[data-tab="chat"]');
-  switchTab('chat', chatTab);
+  switchTab('chat', document.querySelector('.tab-item:nth-child(3)'));
 
   // Set up UI
   document.getElementById('chatTitle').textContent = currentTheme;
