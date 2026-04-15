@@ -22,9 +22,9 @@ const AI_CONFIG = {
     ptags: ['🖼 マルチモーダル', '⚡ 高速', '💰 無料', '🇺🇸 Google製']
   },
   gemma: {
-    name: 'Gemma 3 27B', model: 'google/gemma-3-27b-it:free',
+    name: 'Gemma 3 27B', model: 'gemma-3-27b-it',
     color: 'var(--deepseek)', avatar: 'Gm', avatarBg: 'rgba(79,195,247,0.15)',
-    tag: 'free', provider: 'openrouter', keyId: 'openrouter',
+    tag: 'free', provider: 'gemini', keyId: 'gemini',
     desc: 'Google DeepMind製オープンモデルの決定版。128Kの長文コンテキストと堅実な日本語処理で、構造的・論理的な議論を落ち着いて展開する。',
     ptags: ['📄 128K文脈', '🧠 論理的', '💰 無料', '🇺🇸 Google製']
   },
@@ -34,13 +34,6 @@ const AI_CONFIG = {
     tag: 'free', provider: 'openrouter', keyId: 'openrouter',
     desc: 'OpenAI初のオープンソースモデル。MoEアーキテクチャで軽量ながらGPT品質の応答。ツール使用・構造化出力に対応。',
     ptags: ['🌐 OpenAI系', '⚡ MoE軽量', '💰 無料', '🇺🇸 OpenAI製']
-  },
-  llama33: {
-    name: 'Llama 3.3 70B', model: 'meta-llama/llama-3.3-70b-instruct:free',
-    color: 'var(--llama)', avatar: 'L3', avatarBg: 'rgba(255,179,71,0.15)',
-    tag: 'free', provider: 'openrouter', keyId: 'openrouter',
-    desc: 'Meta製の実用大規模モデル。70Bの地力で幅広いテーマを堅実にこなす。バランス型で議論の基礎を支える安定機。',
-    ptags: ['💪 70B規模', '🤝 バランス型', '💰 無料', '🦙 Meta製']
   },
   nemotronano: {
     name: 'Nemotron Nano 9B', model: 'nvidia/nemotron-nano-9b-v2:free',
