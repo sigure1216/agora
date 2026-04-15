@@ -755,6 +755,12 @@ function translateError(msg) {
     [/CORS/i, 'CORSエラー: このモデルはブラウザから直接利用できません。'],
     [/context.*(length|too long|window)/i, '入力が長すぎます。テーマや会話を短くしてください。'],
     [/content.*(filter|policy|safety)/i, 'コンテンツフィルターにより応答がブロックされました。テーマを変えてお試しください。'],
+    [/provider.*error/i, 'プロバイダーでエラーが発生しました。しばらく待ってから再試行してください。'],
+    [/bad gateway|502/i, 'サーバーが一時的に応答できません。しばらく待ってから再試行してください。'],
+    [/overloaded|capacity/i, 'サーバーが混み合っています。しばらく待ってから再試行してください。'],
+    [/model.*not.*available/i, 'このモデルは現在利用できません。別のモデルをお試しください。'],
+    [/invalid.*request/i, 'リクエストが無効です。テーマを変えて再試行してください。'],
+    [/empty.*response/i, '空の応答が返されました。再試行してください。'],
   ];
 
   for (const [pattern, japanese] of translations) {
