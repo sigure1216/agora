@@ -293,6 +293,8 @@ function switchTab(name, el) {
   // Update tab bar buttons
   document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
+  // AI選択画面を開くたびにゲージを更新
+  if (name === 'start') buildAIList();
 }
 
 function gotoStart(mode, sub) {
