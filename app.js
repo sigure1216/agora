@@ -678,7 +678,7 @@ async function callGemini(ai, key, msgs, sysPrompt) {
     contents: contents,
     generationConfig: {
       temperature: 0.8,
-      maxOutputTokens: 1024
+      maxOutputTokens: 4096
     }
   };
 
@@ -718,7 +718,7 @@ async function callOpenAICompatible(url, ai, key, msgs, sysPrompt, extraHeaders 
       ...msgs
     ],
     temperature: 0.8,
-    max_tokens: 1024
+    max_tokens: 4096
   };
 
   const res = await fetch(url, {
@@ -748,7 +748,7 @@ async function callClaude(ai, key, msgs, sysPrompt) {
 
   const body = {
     model: ai.model,
-    max_tokens: 1024,
+    max_tokens: 4096,
     temperature: 0.8,
     system: sysPrompt,
     messages: messages
