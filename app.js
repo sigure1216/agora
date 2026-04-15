@@ -36,9 +36,9 @@ const AI_CONFIG = {
     ptags: ['🌐 OpenAI系', '⚡ MoE軽量', '💰 無料', '🇺🇸 OpenAI製']
   },
   nemotronano: {
-    name: 'Nemotron Nano 9B', model: 'nvidia/nemotron-nano-9b-v2:free',
+    name: 'Nemotron Nano 9B', model: 'nvidia/llama-3.1-nemotron-nano-8b-v1',
     color: 'var(--qwen)', avatar: 'Nn', avatarBg: 'rgba(52,211,153,0.15)',
-    tag: 'free', provider: 'openrouter', keyId: 'openrouter',
+    tag: 'free', provider: 'nvidia', keyId: 'nvidia',
     desc: 'NVIDIA製コンパクト高速モデル。9Bながら即答性に優れ、スピード重視のブレストや短文ディベートで活躍。',
     ptags: ['⚡ 超高速応答', '🎯 簡潔明快', '💰 無料', '🟢 NVIDIA製']
   },
@@ -137,7 +137,8 @@ const KEY_ROWS = [
   { keyId: 'openrouter', label: 'OpenRouter', color: 'var(--accent)', ph: 'sk-or-v1-... (Gemma/Llama/GLM等共通)' },
   { keyId: 'dashscope', label: 'DashScope (Qwen)', color: 'var(--qwen)', ph: 'sk-... (Alibaba Cloud Model Studio)' },
   { keyId: 'gemini', label: 'Gemini', color: 'var(--gemini)', ph: 'AIzaSy...' },
-  { keyId: 'groq', label: 'Groq', color: 'var(--grok)', ph: 'gsk_... (console.groq.com)' }
+  { keyId: 'groq', label: 'Groq', color: 'var(--grok)', ph: 'gsk_... (console.groq.com)' },
+  { keyId: 'nvidia', label: 'NVIDIA', color: 'var(--qwen)', ph: 'nvapi-... (build.nvidia.com)' }
 ];
 
 const PAID_KEY_ROWS = [
@@ -637,6 +638,11 @@ async function callAI(aiId, retries = 2) {
     } else if (ai.provider === 'dashscope') {
       text = await callOpenAICompatible(
         'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
+        ai, key, msgs, sysPrompt
+      );
+    } else if (ai.provider === 'nvidia') {
+      text = await callOpenAICompatible(
+        'https://integrate.api.nvidia.com/v1/chat/completions',
         ai, key, msgs, sysPrompt
       );
     } else if (ai.provider === 'groq') {
