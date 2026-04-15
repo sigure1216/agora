@@ -388,12 +388,10 @@ function buildModeSelector() {
     meet.classList.toggle('active', currentMode === 'meet');
     meet.classList.toggle('meet', currentMode === 'meet');
   }
-  // Show/hide submode card and agenda card based on mode
+  // Show/hide submode card based on mode
   const submodeCard = document.getElementById('submodeCard');
-  const agendaCard = document.getElementById('agendaCard');
   const roundCard = document.getElementById('roundCard');
   if (submodeCard) submodeCard.style.display = currentMode === 'meet' ? '' : 'none';
-  if (agendaCard) agendaCard.style.display = currentMode === 'meet' ? '' : 'none';
   if (roundCard) roundCard.style.display = currentMode === 'debate' ? '' : 'none';
   // Update start button text
   const startBtn = document.getElementById('startBtn');
@@ -474,9 +472,6 @@ async function startSession() {
     chip.className = `mode-chip ${currentMode === 'debate' ? 'debate' : 'meet'}`;
   }
 
-  // Show/hide agenda bar for meet mode
-  const agendaBar = document.getElementById('agendaBar');
-  if (agendaBar) agendaBar.style.display = currentMode === 'meet' ? '' : 'none';
 
   // Show next round button
   const nextBtn = document.getElementById('nextBtn');
@@ -913,55 +908,6 @@ function removeFile(i) {
   renderAttachments();
 }
 
-// ============================================================================
-// アジェンダ - ミーティング用議題管理
-// ============================================================================
-
-function addAgenda() {
-  const input = document.getElementById('agendaInput');
-  if (!input || !input.value.trim()) return;
-
-  const items = getAgendaItems();
-  items.push(input.value.trim());
-  localStorage.setItem('agora_agenda', JSON.stringify(items));
-  input.value = '';
-
-  renderAgendaChips(-1);
-}
-
-function delAgenda(btn) {
-  const items = getAgendaItems();
-  const idx = parseInt(btn.dataset.idx);
-  items.splice(idx, 1);
-  localStorage.setItem('agora_agenda', JSON.stringify(items));
-  renderAgendaChips(-1);
-}
-
-function getAgendaItems() {
-  try {
-    return JSON.parse(localStorage.getItem('agora_agenda') || '[]');
-  } catch {
-    return [];
-  }
-}
-
-function renderAgendaChips(roundIdx) {
-  const container = document.getElementById('agendaChips');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const items = getAgendaItems();
-  items.forEach((item, i) => {
-    const chip = document.createElement('button');
-    chip.className = `agenda-chip ${i === roundIdx ? 'active' : ''}`;
-    chip.innerHTML = `${item} <button class="del-btn" data-idx="${i}" onclick="event.stopPropagation(); delAgenda(this)">×</button>`;
-    chip.onclick = () => {
-      document.querySelectorAll('.agenda-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-    };
-    container.appendChild(chip);
-  });
-}
 
 // ============================================================================
 // X 出力モーダル - ツイートスレッド作成
