@@ -191,6 +191,8 @@ function saveKey(keyId) {
   const val = input.value.trim();
   setKey(keyId, val);
   showToast(val ? `${keyId} を保存` : `${keyId} をクリア`);
+  const badge = document.getElementById(`saved-${keyId}`);
+  if (badge) badge.textContent = val ? '保存済み ✅' : '';
 }
 
 // ============================================================================
@@ -326,12 +328,14 @@ function buildApiKeyForm() {
   freeDiv.className = 'key-section';
   freeDiv.innerHTML = '<h3>無料API</h3>';
   KEY_ROWS.forEach(row => {
+    const saved = getKey(row.keyId);
     const row_el = document.createElement('div');
     row_el.className = 'key-row';
     row_el.innerHTML = `
       <label>${row.label}</label>
-      <input type="password" class="key-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${getKey(row.keyId)}">
+      <input type="password" class="key-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${saved}">
       <button onclick="saveKey('${row.keyId}')">保存</button>
+      <span class="key-saved" id="saved-${row.keyId}">${saved ? '保存済み ✅' : ''}</span>
     `;
     freeDiv.appendChild(row_el);
   });
@@ -342,12 +346,14 @@ function buildApiKeyForm() {
   paidDiv.className = 'key-section';
   paidDiv.innerHTML = '<h3>有料API</h3>';
   PAID_KEY_ROWS.forEach(row => {
+    const saved = getKey(row.keyId);
     const row_el = document.createElement('div');
     row_el.className = 'key-row';
     row_el.innerHTML = `
       <label>${row.label}</label>
-      <input type="password" class="key-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${getKey(row.keyId)}">
+      <input type="password" class="key-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${saved}">
       <button onclick="saveKey('${row.keyId}')">保存</button>
+      <span class="key-saved" id="saved-${row.keyId}">${saved ? '保存済み ✅' : ''}</span>
     `;
     paidDiv.appendChild(row_el);
   });
