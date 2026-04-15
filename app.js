@@ -64,7 +64,7 @@ const AI_CONFIG = {
     ptags: ['⚡ 高速', '🗣 流暢な日本語', '💰 無料', '🇨🇳 Zhipu製']
   },
   deepseek: {
-    name: 'DeepSeek V3.2（ツッコミ役）', model: 'deepseek-chat',
+    name: 'DeepSeek V3.2', model: 'deepseek-chat',
     color: 'var(--deepseek)', avatar: 'DS', avatarBg: 'rgba(79,195,247,0.15)',
     tag: 'paid', provider: 'deepseek', keyId: 'deepseek',
     desc: 'DeepSeek公式API経由の高速汎用モデル。安価かつ低レイテンシで日本語の切り返しが鋭く、矛盾や甘さを即座に指摘するツッコミ役として場を紡める。',
