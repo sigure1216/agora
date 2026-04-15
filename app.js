@@ -200,7 +200,10 @@ function saveKey(keyId) {
   setKey(keyId, val);
   showToast(val ? `${keyId} を保存` : `${keyId} をクリア`);
   const badge = document.getElementById(`saved-${keyId}`);
-  if (badge) badge.textContent = val ? '保存済み ✅' : '';
+  if (badge) {
+    badge.textContent = val ? '✓ 接続済み' : '未設定';
+    badge.className = `key-card-status ${val ? 'saved' : 'empty'}`;
+  }
 }
 
 // ============================================================================
@@ -344,41 +347,34 @@ function buildApiKeyForm() {
   if (!container) return;
   container.innerHTML = '';
 
-  // Free section
-  const freeDiv = document.createElement('div');
-  freeDiv.className = 'key-section';
-  freeDiv.innerHTML = '<h3>無料API</h3>';
-  KEY_ROWS.forEach(row => {
-    const saved = getKey(row.keyId);
-    const row_el = document.createElement('div');
-    row_el.className = 'key-row';
-    row_el.innerHTML = `
-      <label>${row.label}</label>
-      <input type="password" class="key-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${saved}">
-      <button onclick="saveKey('${row.keyId}')">保存</button>
-      <span class="key-saved" id="saved-${row.keyId}">${saved ? '保存済み ✅' : ''}</span>
-    `;
-    freeDiv.appendChild(row_el);
-  });
-  container.appendChild(freeDiv);
+  function buildSection(title, icon, badge, rows) {
+    const section = document.createElement('div');
+    section.className = 'key-section';
+    section.innerHTML = `<div class="key-section-title"><span class="key-section-icon">${icon}</span><span class="key-section-label">${title}</span><span class="key-section-badge ${badge}">${badge === 'free' ? 'FREE' : 'PAID'}</span></div>`;
+    rows.forEach(row => {
+      const saved = getKey(row.keyId);
+      const card = document.createElement('div');
+      card.className = 'key-card';
+      card.innerHTML = `
+        <div class="key-card-header">
+          <div class="key-card-name">
+            <div class="key-card-dot" style="background:${row.color}"></div>
+            <div class="key-card-label">${row.label}</div>
+          </div>
+          <div class="key-card-status ${saved ? 'saved' : 'empty'}" id="saved-${row.keyId}">${saved ? '✓ 接続済み' : '未設定'}</div>
+        </div>
+        <div class="key-card-input-row">
+          <input type="password" class="key-card-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${saved}">
+          <button class="key-card-save" onclick="saveKey('${row.keyId}')">保存</button>
+        </div>
+      `;
+      section.appendChild(card);
+    });
+    container.appendChild(section);
+  }
 
-  // Paid section
-  const paidDiv = document.createElement('div');
-  paidDiv.className = 'key-section';
-  paidDiv.innerHTML = '<h3>有料API</h3>';
-  PAID_KEY_ROWS.forEach(row => {
-    const saved = getKey(row.keyId);
-    const row_el = document.createElement('div');
-    row_el.className = 'key-row';
-    row_el.innerHTML = `
-      <label>${row.label}</label>
-      <input type="password" class="key-input" data-key="${row.keyId}" placeholder="${row.ph}" value="${saved}">
-      <button onclick="saveKey('${row.keyId}')">保存</button>
-      <span class="key-saved" id="saved-${row.keyId}">${saved ? '保存済み ✅' : ''}</span>
-    `;
-    paidDiv.appendChild(row_el);
-  });
-  container.appendChild(paidDiv);
+  buildSection('無料 API', '🌐', 'free', KEY_ROWS);
+  buildSection('有料 API', '💎', 'paid', PAID_KEY_ROWS);
 }
 
 // ============================================================================
