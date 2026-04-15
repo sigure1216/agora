@@ -19,49 +19,56 @@ const AI_CONFIG = {
     color: 'var(--gemini)', avatar: 'G', avatarBg: 'rgba(91,143,255,0.15)',
     tag: 'free', provider: 'gemini', keyId: 'gemini',
     desc: 'Google最新のマルチモーダル高速モデル。テキスト・画像を同時に理解し、長文処理と論理推論のバランスに優れる。最新情報にも強い。',
-    ptags: ['🖼 マルチモーダル', '⚡ 高速', '💰 無料', '🇺🇸 Google製']
+    ptags: ['🖼 マルチモーダル', '⚡ 高速', '💰 無料', '🇺🇸 Google製'],
+    dailyLimit: 500
   },
   gemma: {
     name: 'Gemma 3 27B', model: 'gemma-3-27b-it',
     color: 'var(--deepseek)', avatar: 'Gm', avatarBg: 'rgba(79,195,247,0.15)',
     tag: 'free', provider: 'gemini', keyId: 'gemini',
     desc: 'Google DeepMind製オープンモデルの決定版。128Kの長文コンテキストと堅実な日本語処理で、構造的・論理的な議論を落ち着いて展開する。',
-    ptags: ['📄 128K文脈', '🧠 論理的', '💰 無料', '🇺🇸 Google製']
+    ptags: ['📄 128K文脈', '🧠 論理的', '💰 無料', '🇺🇸 Google製'],
+    dailyLimit: 500
   },
   gptoss: {
     name: 'GPT-OSS 20B', model: 'openai/gpt-oss-20b:free',
     color: 'var(--mistral)', avatar: 'O', avatarBg: 'rgba(255,126,179,0.15)',
     tag: 'free', provider: 'openrouter', keyId: 'openrouter',
     desc: 'OpenAI初のオープンソースモデル。MoEアーキテクチャで軽量ながらGPT品質の応答。ツール使用・構造化出力に対応。',
-    ptags: ['🌐 OpenAI系', '⚡ MoE軽量', '💰 無料', '🇺🇸 OpenAI製']
+    ptags: ['🌐 OpenAI系', '⚡ MoE軽量', '💰 無料', '🇺🇸 OpenAI製'],
+    dailyLimit: 50
   },
   nemotronano: {
     name: 'Nemotron Nano 9B', model: 'nvidia/nemotron-nano-9b-v2:free',
     color: 'var(--qwen)', avatar: 'Nn', avatarBg: 'rgba(52,211,153,0.15)',
     tag: 'free', provider: 'openrouter', keyId: 'openrouter',
     desc: 'NVIDIA製コンパクト高速モデル。9Bながら即答性に優れ、スピード重視のブレストや短文ディベートで活躍。',
-    ptags: ['⚡ 超高速応答', '🎯 簡潔明快', '💰 無料', '🟢 NVIDIA製']
+    ptags: ['⚡ 超高速応答', '🎯 簡潔明快', '💰 無料', '🟢 NVIDIA製'],
+    dailyLimit: 50
   },
   qwen3: {
     name: 'Qwen Plus', model: 'qwen-plus',
     color: 'var(--qwen)', avatar: 'Qw', avatarBg: 'rgba(52,211,153,0.15)',
     tag: 'free', provider: 'dashscope', keyId: 'dashscope',
     desc: 'Alibaba Cloud Model Studio提供のQwenフラッグシップモデル。高性能かつ100万トークン無料枠あり。OpenAI互換APIで安定利用。',
-    ptags: ['🌏 多言語', '🧠 高性能', '💰 無料枠あり', '🇨🇳 Alibaba製']
+    ptags: ['🌏 多言語', '🧠 高性能', '💰 無料枠あり', '🇨🇳 Alibaba製'],
+    dailyLimit: 200
   },
   glm: {
     name: 'GLM 4.5 Air', model: 'z-ai/glm-4.5-air:free',
     color: 'var(--accent2)', avatar: 'GL', avatarBg: 'rgba(0,229,170,0.15)',
     tag: 'free', provider: 'openrouter', keyId: 'openrouter',
     desc: 'Zhipu AIのGLM 4.5 Air軽量版。応答が速くバランスに優れる。幅広いテーマで的確かつ流暢な日本語を返す。',
-    ptags: ['⚡ 高速', '🗣 流暢な日本語', '💰 無料', '🇨🇳 Zhipu製']
+    ptags: ['⚡ 高速', '🗣 流暢な日本語', '💰 無料', '🇨🇳 Zhipu製'],
+    dailyLimit: 50
   },
   groq: {
     name: 'Llama 3.3 70B (Groq)', model: 'llama-3.3-70b-versatile',
     color: 'var(--grok)', avatar: 'Gq', avatarBg: 'rgba(56,189,248,0.15)',
     tag: 'free', provider: 'groq', keyId: 'groq',
     desc: 'Groq LPU推論エンジンで動作するLlama 3.3 70B。圧倒的な応答速度が最大の特徴で、リアルタイム議論に最適。',
-    ptags: ['⚡ 超高速推論', '💪 70B規模', '💰 無料枠あり', '🚀 Groq LPU']
+    ptags: ['⚡ 超高速推論', '💪 70B規模', '💰 無料枠あり', '🚀 Groq LPU'],
+    dailyLimit: 30
   },
   deepseek: {
     name: 'DeepSeek V3.2', model: 'deepseek-chat',
@@ -69,30 +76,67 @@ const AI_CONFIG = {
     tag: 'paid', provider: 'deepseek', keyId: 'deepseek',
     desc: 'DeepSeek公式API経由の高速汎用モデル。安価かつ低レイテンシで日本語の切り返しが鋭く、矛盾や甘さを即座に指摘するツッコミ役として場を紡める。',
     ptags: ['😈 鋭い切り返し', '💴 激安', '🧠 高推論力', '🇨🇳 DeepSeek製'],
-    role: '🎍 ツッコミ役'
+    role: '🎍 ツッコミ役',
+    dailyLimit: null
   },
   deepseekr: {
     name: 'DeepSeek R1', model: 'deepseek-reasoner',
     color: 'var(--deepseek)', avatar: 'R1', avatarBg: 'rgba(79,195,247,0.15)',
     tag: 'paid', provider: 'deepseek', keyId: 'deepseek',
     desc: 'DeepSeek公式のR1系推論モデル。Chain-of-Thoughtで内省しながら結論に至る思考型。複雑な論理・数学・哲学的議論で真価を発揮。',
-    ptags: ['🧠 Chain-of-Thought', '🔬 深い推論', '💴 低価格', '🇨🇳 DeepSeek製']
+    ptags: ['🧠 Chain-of-Thought', '🔬 深い推論', '💴 低価格', '🇨🇳 DeepSeek製'],
+    dailyLimit: null
   },
   chatgpt: {
     name: 'ChatGPT 4o', model: 'gpt-4o',
     color: 'var(--chatgpt)', avatar: 'C', avatarBg: 'rgba(116,170,156,0.15)',
     tag: 'paid', provider: 'openai', keyId: 'chatgpt',
     desc: 'OpenAI製のスタンダードAI。膨大な知識量と丁寧な説明、バランスの取れた意見が強み。APIキー設定で利用可能。',
-    ptags: ['🌐 圧倒的知名度', '🤝 バランス型', '💳 有料', '🇺🇸 OpenAI製']
+    ptags: ['🌐 圧倒的知名度', '🤝 バランス型', '💳 有料', '🇺🇸 OpenAI製'],
+    dailyLimit: null
   },
   claude: {
     name: 'Claude Sonnet', model: 'claude-sonnet-4-5',
     color: 'var(--claude)', avatar: 'A', avatarBg: 'rgba(212,165,116,0.15)',
     tag: 'paid', provider: 'claude', keyId: 'claude',
     desc: 'Anthropic製AI。倫理的視点と長文理解が業界最高レベル。ニュアンスを大切にした丁寧な議論が得意。APIキー設定で利用可能。',
-    ptags: ['📖 長文理解', '⚖️ 倫理的視点', '💳 有料', '🛡 Anthropic製']
+    ptags: ['📖 長文理解', '⚖️ 倫理的視点', '💳 有料', '🛡 Anthropic製'],
+    dailyLimit: null
   }
 };
+
+// ============================================================================
+// 使用回数トラッキング
+// ============================================================================
+
+function getUsageKey() {
+  return 'agora_usage_' + new Date().toISOString().slice(0, 10);
+}
+
+function getDailyUsage() {
+  const key = getUsageKey();
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : {};
+}
+
+function recordUsage(aiId) {
+  const key = getUsageKey();
+  const usage = getDailyUsage();
+  usage[aiId] = (usage[aiId] || 0) + 1;
+  localStorage.setItem(key, JSON.stringify(usage));
+  // 古い日付のデータを削除
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('agora_usage_') && k !== key) localStorage.removeItem(k);
+  });
+}
+
+function getRemaining(aiId) {
+  const ai = AI_CONFIG[aiId];
+  if (!ai || ai.dailyLimit === null) return null;
+  const usage = getDailyUsage();
+  const used = usage[aiId] || 0;
+  return Math.max(0, ai.dailyLimit - used);
+}
 
 // ============================================================================
 // サブモード設定 - 議論形式 (拡張可能)
@@ -295,6 +339,27 @@ function buildAIList() {
     let tagLabel = ai.tag === 'free' ? 'free' : 'paid';
     if (!canUseThis && ai.tag !== 'free') { tagClass = 'nokey'; tagLabel = '要APIキー'; }
 
+    const remaining = getRemaining(id);
+    let quotaHtml = '';
+    if (remaining !== null) {
+      const limit = ai.dailyLimit;
+      const used = limit - remaining;
+      const pct = Math.round((remaining / limit) * 100);
+      const barColor = pct > 50 ? 'var(--accent2)' : pct > 20 ? '#ffb347' : 'var(--debate)';
+      quotaHtml = `
+        <div style="display:flex;align-items:center;gap:6px;margin-top:5px">
+          <div style="flex:1;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${barColor};border-radius:2px;transition:width 0.3s"></div>
+          </div>
+          <span style="font-size:10px;color:${barColor};font-family:'DM Mono',monospace;white-space:nowrap;min-width:55px;text-align:right">${remaining}/${limit}</span>
+        </div>`;
+    } else {
+      quotaHtml = `
+        <div style="margin-top:5px">
+          <span style="font-size:10px;color:var(--text-dim);font-family:'DM Mono',monospace">従量課金</span>
+        </div>`;
+    }
+
     const item = document.createElement('div');
     item.className = 'ai-item';
     item.style.color = ai.color;
@@ -306,6 +371,7 @@ function buildAIList() {
           <div class="ai-md" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
             ${ai.ptags.map(p => `<span class="ai-ptag">${p}</span>`).join('')}
           </div>
+          ${quotaHtml}
         </div>
         <button class="info-btn" onclick="event.stopPropagation();toggleInfo('${id}')">ℹ</button>
         <div class="check-circle" data-ai="${id}" onclick="event.stopPropagation();toggleAI('${id}')">✓</div>
@@ -652,6 +718,7 @@ async function callAI(aiId, retries = 2) {
     document.querySelectorAll(`.typing-indicator[data-ai="${aiId}"]`).forEach(el => el.remove());
 
     addMessage(aiId, text);
+    recordUsage(aiId);
     sessionHistory.push({ role: 'assistant', id: aiId, content: text });
   } catch (err) {
     document.querySelectorAll(`.typing-indicator[data-ai="${aiId}"]`).forEach(el => el.remove());
