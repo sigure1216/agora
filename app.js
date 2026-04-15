@@ -150,7 +150,7 @@ const PAID_KEY_ROWS = [
 // ============================================================================
 
 let currentMode = 'debate'; // 'debate' or 'meet'
-let currentSubmode = 'brainstorm';
+let currentSubmode = 'study';
 let currentTheme = '';
 let selectedAIs = [];
 let currentRound = 1;
@@ -249,7 +249,7 @@ function switchTab(name, el) {
 
 function gotoStart(mode, sub) {
   currentMode = mode;
-  currentSubmode = sub || 'brainstorm';
+  currentSubmode = sub || 'study';
   switchTab('start', document.querySelector('.tab-item:nth-child(2)'));
   buildModeSelector();
   buildSubModeSelector();
@@ -422,7 +422,7 @@ function buildSubModeSelector() {
 function selSub(el) {
   document.querySelectorAll('.sm-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
-  currentSubmode = el.dataset.sub || 'brainstorm';
+  currentSubmode = el.dataset.sub || 'study';
 }
 
 // ============================================================================
