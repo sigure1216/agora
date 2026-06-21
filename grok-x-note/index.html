@@ -84,9 +84,37 @@
     .wrap{padding:32px 0 56px;}
     .grid{grid-template-columns:1fr;}
   }
+
+  /* ── self-edit: tap the floating button to edit (no URL needed) ── */
+  .editfab{position:fixed; right:16px; bottom:16px; z-index:49;
+    font:inherit; font-size:13px; font-weight:700; cursor:pointer; color:#fff;
+    border:0; border-radius:999px; padding:11px 17px;
+    background:rgba(31,41,55,.82); box-shadow:0 4px 16px rgba(0,0,0,.22);}
+  body.editmode .editfab{display:none;}
+  .editbar{position:fixed; top:0; left:0; right:0; z-index:50; display:none;
+    align-items:center; gap:10px; flex-wrap:wrap;
+    padding:10px 16px; background:#1f2937; color:#fff; box-shadow:0 2px 14px rgba(0,0,0,.2);}
+  body.editmode .editbar{display:flex;}
+  body.editmode .wrap{padding-top:88px;}
+  .editbar strong{font-weight:800; font-size:14px;}
+  .editbar button{font:inherit; font-size:13.5px; font-weight:700; cursor:pointer;
+    border:0; border-radius:8px; padding:8px 14px; color:#fff; background:#0f766e;}
+  .editbar button.ghost{background:#374151;}
+  .editbar .hint{color:#cbd5e1; font-size:12.5px; font-weight:400;}
+  body.editing .wrap{background:#fffef7; box-shadow:inset 0 0 0 2px rgba(15,118,110,.25); border-radius:8px;}
+  @media print{ .editfab,.editbar{display:none !important;} }
 </style>
 </head>
 <body>
+
+<button class="editfab" id="eb-open" type="button">✏️ 編集</button>
+<div class="editbar" role="toolbar" aria-label="編集ツールバー">
+  <strong>編集モード</strong>
+  <button id="eb-save" type="button">💾 保存してダウンロード</button>
+  <button id="eb-done" class="ghost" type="button">完了</button>
+  <span class="hint">文章をクリックして書き換え → 保存 → 出力した index.html を差し替えて公開</span>
+</div>
+
 <main class="wrap">
 
   <header>
@@ -276,5 +304,51 @@
   <p class="foot">Shin's note — 2026.06.21</p>
 
 </main>
+
+<script>
+(function(){
+  function region(){ return document.querySelector('.wrap'); }
+  var editing = false;
+
+  function setEditing(on){
+    editing = on;
+    var r = region();
+    document.body.classList.toggle('editmode', on);
+    document.body.classList.toggle('editing', on);
+    if(on){ r.setAttribute('contenteditable','true'); r.focus(); }
+    else { r.removeAttribute('contenteditable'); }
+  }
+
+  // paste as plain text so copied content never reintroduces messy markup
+  document.addEventListener('paste', function(e){
+    if(!editing) return;
+    e.preventDefault();
+    var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, text);
+  });
+
+  function save(){
+    setEditing(false); // bake edits in + strip contenteditable
+    var clone = document.documentElement.cloneNode(true);
+    var b = clone.querySelector('body');
+    if(b){ b.classList.remove('editmode'); b.classList.remove('editing'); }
+    clone.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+    var html = '<!doctype html>\n' + clone.outerHTML + '\n';
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], { type:'text/html' }));
+    a.download = 'index.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1500);
+  }
+
+  var open = document.getElementById('eb-open');
+  var done = document.getElementById('eb-done');
+  var sv   = document.getElementById('eb-save');
+  if(open) open.addEventListener('click', function(){ setEditing(true); });
+  if(done) done.addEventListener('click', function(){ setEditing(false); });
+  if(sv)   sv.addEventListener('click', save);
+})();
+</script>
+
 </body>
 </html>
